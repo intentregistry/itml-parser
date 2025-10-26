@@ -1,0 +1,152 @@
+(* ITML v0.1 Grammar - EBNF Specification *)
+
+document = { top_level_block } ;
+
+top_level_block = app_block | intent_block | layout_block | component_block | schema_block | policy_block ;
+
+(* App Block *)
+app_block = "app", whitespace, string_literal, newline,
+            { description_block, newline },
+            { imports_block, newline },
+            { routes_block, newline },
+            { components_block, newline },
+            { theme_block, newline } ;
+
+(* Intent Block *)
+intent_block = "intent", whitespace, string_literal, newline,
+               { description_block, newline },
+               { inputs_block, newline },
+               { outputs_block, newline },
+               { workflow_block, newline },
+               { rules_block, newline },
+               { tests_block, newline } ;
+
+(* Schema Block *)
+schema_block = "schema", whitespace, string_literal, newline,
+               { description_block, newline },
+               { fields_block, newline },
+               { validation_block, newline } ;
+
+(* Component Block *)
+component_block = "component", whitespace, string_literal, newline,
+                  { description_block, newline },
+                  { inputs_block, newline },
+                  { outputs_block, newline } ;
+
+(* Layout Block *)
+layout_block = "layout", whitespace, string_literal, newline,
+                { description_block, newline },
+                { structure_block, newline } ;
+
+(* Policy Block *)
+policy_block = "policy", whitespace, string_literal, newline,
+               { description_block, newline },
+               { rules_block, newline } ;
+
+(* Block Definitions *)
+description_block = "description:", [whitespace], string_literal ;
+
+imports_block = "imports:", newline,
+                { indent, "-", whitespace, string_literal, newline } ;
+
+routes_block = "routes:", newline,
+               { indent, "-", whitespace, "path:", whitespace, string_literal, newline,
+                 indent, whitespace, "component:", whitespace, string_literal, newline } ;
+
+components_block = "components:", newline,
+                   { indent, "-", whitespace, "name:", whitespace, string_literal, newline,
+                     { indent, whitespace, inputs_block, newline },
+                     { indent, whitespace, outputs_block, newline } } ;
+
+theme_block = "theme:", newline,
+              { indent, identifier, ":", whitespace, string_literal, newline } ;
+
+inputs_block = "inputs:", newline,
+               { indent, "-", whitespace, input_param, newline } ;
+
+outputs_block = "outputs:", newline,
+                { indent, "-", whitespace, output_param, newline } ;
+
+fields_block = "fields:", newline,
+               { indent, identifier, ":", whitespace, type_ref, [whitespace, "=", whitespace, value], newline } ;
+
+validation_block = "validation:", newline,
+                   { indent, "-", whitespace, identifier, ":", whitespace, validation_rule, newline } ;
+
+workflow_block = "workflow:", newline,
+                 { indent, "-", whitespace, "step:", whitespace, string_literal, newline,
+                   indent, whitespace, "action:", whitespace, string_literal, newline,
+                   [indent, whitespace, "depends:", whitespace, "[", string_literal, { ",", whitespace, string_literal }, "]", newline] } ;
+
+rules_block = "rules:", newline,
+              { indent, "-", whitespace, "name:", whitespace, string_literal, newline,
+                indent, whitespace, "condition:", whitespace, string_literal, newline,
+                indent, whitespace, "action:", whitespace, string_literal, newline } ;
+
+tests_block = "tests:", newline,
+              { indent, "-", whitespace, "name:", whitespace, string_literal, newline,
+                indent, whitespace, "inputs:", newline,
+                { indent, whitespace, identifier, ":", whitespace, value, newline },
+                indent, whitespace, "expected:", newline,
+                { indent, whitespace, identifier, ":", whitespace, value, newline } } ;
+
+structure_block = "structure:", newline,
+                  { indent, string_literal, newline } ;
+
+(* Parameter Definitions *)
+input_param = "name:", whitespace, string_literal, newline,
+              indent, whitespace, "type:", whitespace, type_ref, newline,
+              { indent, whitespace, param_attr, newline } ;
+
+output_param = "name:", whitespace, string_literal, newline,
+               indent, whitespace, "type:", whitespace, type_ref, newline ;
+
+param_attr = ("required:", whitespace, boolean) |
+             ("default:", whitespace, value) |
+             ("pattern:", whitespace, string_literal) |
+             ("in:", whitespace, string_literal) ;
+
+validation_rule = "required" | ("pattern(", string_literal, ")") ;
+
+(* Type System *)
+type_ref = primitive_type | enum_type | list_type | map_type | named_type ;
+
+primitive_type = "string" | "number" | "boolean" | "datetime" | "uuid" | "bytes" ;
+
+enum_type = "enum(", string_literal, { ",", whitespace, string_literal }, ")" ;
+
+list_type = "list(", type_ref, ")" ;
+
+map_type = "map(", type_ref, ")" ;
+
+named_type = identifier ;
+
+(* Values *)
+value = string_literal | number | boolean | regex_literal ;
+
+(* Literals *)
+string_literal = '"', { character - '"' }, '"' | "'", { character - "'" }, "'" ;
+
+number = ["+" | "-"], ("0" | digit - "0", { digit }), [".", { digit }], [("e" | "E"), ["+" | "-"], { digit }] ;
+
+boolean = "true" | "false" ;
+
+regex_literal = "/", { character - "/" }, "/", { letter } ;
+
+(* Identifiers *)
+identifier = letter, { letter | digit | "_" } ;
+
+(* Comments *)
+comment = "#", { character - newline } ;
+
+(* Whitespace and Layout *)
+whitespace = " " | tab ;
+indent = { whitespace } ;
+newline = "\n" | "\r\n" ;
+
+(* Character Classes *)
+letter = "a".."z" | "A".."Z" ;
+digit = "0".."9" ;
+character = letter | digit | whitespace | symbol ;
+symbol = "!" | "@" | "#" | "$" | "%" | "^" | "&" | "*" | "(" | ")" | "-" | "_" | "=" | "+" | "[" | "]" | "{" | "}" | "|" | "\" | ":" | ";" | "'" | "\"" | "<" | ">" | "," | "." | "?" | "/" | "~" | "`" ;
+tab = "\t" ;

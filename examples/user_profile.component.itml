@@ -1,0 +1,9 @@
+component "UserProfile"
+description: "Displays user profile information"
+
+inputs:
+  - name: "userId" (string)
+  - name: "showAvatar" (boolean) = true
+
+outputs:
+  - name: "profile" (UserProfile)

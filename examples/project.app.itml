@@ -1,9 +1,9 @@
 app "Project Management"
-description: "A project management application"
+description: "Manages projects, tasks, and teams"
 
 imports:
-  - "@intent/ui-components"
-  - "./schemas/address"
+  - "project.schema"
+  - "task.schema"
 
 routes:
   - path: "/projects"
@@ -14,10 +14,10 @@ routes:
 components:
   - name: "ProjectList"
     inputs:
-      - name: "projects" (list(Project))
+      - name: "filter" (string)
     outputs:
       - name: "selected" (Project)
-    
+
   - name: "ProjectDetail"
     inputs:
       - name: "project" (Project)
@@ -26,5 +26,5 @@ components:
       - name: "updated" (Project)
 
 theme:
-  primary: "#007bff"
-  secondary: "#6c757d"
+  primary: "007bff"
+  secondary: "6c757d"

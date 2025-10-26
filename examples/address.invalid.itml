@@ -1,5 +1,5 @@
 schema "Address"
-description: "A postal address schema"
+description: "A physical mailing address"
 
 fields:
   street: string
@@ -13,6 +13,4 @@ validation:
   - city: required
   - state: required
   - zip: pattern("^[0-9]{5}(-[0-9]{4})?$")
-
-# This should cause a parse error - invalid syntax
-invalid_field: [unclosed bracket
+  [unclosed bracket

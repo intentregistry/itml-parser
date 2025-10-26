@@ -1,5 +1,5 @@
 schema "Address"
-description: "A postal address schema"
+description: "A physical mailing address"
 
 fields:
   street: string

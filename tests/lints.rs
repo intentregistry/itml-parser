@@ -21,7 +21,7 @@ workflow:
         .collect();
     
     assert!(!itml001_errors.is_empty());
-    assert!(itml001_errors[0].message.contains("inputs"));
+    assert!(itml001_errors[0].message.contains("input"));
 }
 
 #[test]

@@ -1,7 +1,9 @@
 #[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::*;
 #[cfg(feature = "wasm")]
-use crate::{parse, format, lint, ParseOptions, FormatOptions, LintOptions, LintRule, DiagnosticLevel};
+use crate::{parse, format, lint, ParseOptions, FormatOptions, LintOptions, LintRule};
+#[cfg(feature = "wasm")]
+use serde_json;
 
 #[cfg(feature = "wasm")]
 #[wasm_bindgen]
@@ -10,8 +12,8 @@ pub fn parse_itml(input: &str) -> Result<JsValue, JsValue> {
     match parse(input, &opts) {
         Ok(doc) => {
             // Convert Document to JsValue
-            match serde_wasm_bindgen::to_value(&doc) {
-                Ok(js_value) => Ok(js_value),
+            match serde_json::to_string(&doc) {
+                Ok(json_string) => Ok(JsValue::from_str(&json_string)),
                 Err(e) => Err(JsValue::from_str(&format!("Serialization error: {}", e))),
             }
         }
@@ -56,8 +58,8 @@ pub fn lint_itml(input: &str, rules: Option<Vec<String>>) -> Result<JsValue, JsV
     match parse(input, &parse_opts) {
         Ok(doc) => {
             let diagnostics = lint(&doc, &lint_opts);
-            match serde_wasm_bindgen::to_value(&diagnostics) {
-                Ok(js_value) => Ok(js_value),
+            match serde_json::to_string(&diagnostics) {
+                Ok(json_string) => Ok(JsValue::from_str(&json_string)),
                 Err(e) => Err(JsValue::from_str(&format!("Serialization error: {}", e))),
             }
         }

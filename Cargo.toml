@@ -2,6 +2,9 @@
 name = "itml-parser"
 version = "0.1.0"
 edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
 description = "Parser / Formatter / Linter for ITML v0.1 — the Intention Markup Language"
 license = "MIT"
 repository = "https://github.com/intent-ecosystem/itml-parser"
@@ -14,6 +17,7 @@ pest_derive = "2"
 thiserror = "1"
 miette = { version = "7", features = ["fancy"] }
 serde = { version = "1", features = ["derive"], optional = true }
+serde_json = { version = "1", optional = true }
 once_cell = "1"
 
 [dev-dependencies]
@@ -22,7 +26,7 @@ criterion = "0.5"
 
 [features]
 default = []
-wasm = ["wasm-bindgen"]
+wasm = ["wasm-bindgen", "serde", "serde_json"]
 serde = ["dep:serde"]
 
 [dependencies.wasm-bindgen]

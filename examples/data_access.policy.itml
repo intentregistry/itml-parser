@@ -1,0 +1,13 @@
+policy "DataAccess"
+description: "Controls access to user data"
+
+rules:
+  - name: "user_can_read_own_data"
+    condition: "user.id == resource.ownerId"
+    action: "allow"
+  - name: "admin_can_read_all"
+    condition: "user.role == 'admin'"
+    action: "allow"
+  - name: "deny_others"
+    condition: "true"
+    action: "deny"

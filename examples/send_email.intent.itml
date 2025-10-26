@@ -3,50 +3,29 @@ description: "Send an email to a recipient"
 
 inputs:
   - name: "to" (string)
-    required: true
-    pattern: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
   - name: "subject" (string)
-    required: true
   - name: "body" (string)
-    required: true
-  - name: "priority" (enum("low", "normal", "high"))
-    default: "normal"
 
 outputs:
   - name: "messageId" (string)
-  - name: "status" (enum("sent", "failed", "queued"))
 
 workflow:
   - step: "validate"
-    action: "validate_email"
+    action: "validateEmail(to)"
   - step: "send"
-    action: "send_email"
+    action: "sendEmail(to, subject, body)"
     depends: ["validate"]
-  - step: "notify"
-    action: "notify_sender"
-    depends: ["send"]
 
 rules:
-  - name: "rate_limit"
-    condition: "count_last_hour < 100"
-    action: "allow"
-  - name: "spam_check"
-    condition: "body contains spam_keywords"
-    action: "reject"
+  - name: "retry_on_failure"
+    condition: "error.code == 'SMTP_ERROR'"
+    action: "retry(3)"
 
 tests:
   - name: "valid_email"
     inputs:
       to: "test@example.com"
       subject: "Test"
-      body: "Hello world"
+      body: "Hello"
     expected:
-      status: "sent"
-  
-  - name: "invalid_email"
-    inputs:
-      to: "invalid-email"
-      subject: "Test"
-      body: "Hello world"
-    expected:
-      status: "failed"
+      messageId: "msg_123"

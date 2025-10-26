@@ -364,6 +364,7 @@ dependencies = [
  "pest",
  "pest_derive",
  "serde",
+ "serde_json",
  "thiserror",
  "wasm-bindgen",
 ]

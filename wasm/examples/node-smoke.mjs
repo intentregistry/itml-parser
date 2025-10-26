@@ -1,4 +1,4 @@
-import init, { parse_itml, format_itml, lint_itml, get_version } from './pkg/itml_parser.js';
+import init, { parse_itml, format_itml, lint_itml, get_version } from '../pkg/itml_parser.js';
 
 async function main() {
     // Initialize the WASM module

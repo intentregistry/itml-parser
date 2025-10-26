@@ -1,6 +1,9 @@
 use crate::ast::*;
 use std::collections::HashSet;
 
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Serialize};
+
 /// Diagnostic level
 #[derive(Debug, Clone, PartialEq)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]

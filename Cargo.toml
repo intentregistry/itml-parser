@@ -1,0 +1,30 @@
+[package]
+name = "itml-parser"
+version = "0.1.0"
+edition = "2021"
+description = "Parser / Formatter / Linter for ITML v0.1 — the Intention Markup Language"
+license = "MIT"
+repository = "https://github.com/intent-ecosystem/itml-parser"
+keywords = ["parser", "itml", "intent", "markup"]
+categories = ["parser-implementations", "development-tools"]
+
+[dependencies]
+pest = "2"
+pest_derive = "2"
+thiserror = "1"
+miette = { version = "7", features = ["fancy"] }
+serde = { version = "1", features = ["derive"], optional = true }
+once_cell = "1"
+
+[dev-dependencies]
+insta = "1"
+criterion = "0.5"
+
+[features]
+default = []
+wasm = ["wasm-bindgen"]
+serde = ["dep:serde"]
+
+[dependencies.wasm-bindgen]
+version = "0.2"
+optional = true

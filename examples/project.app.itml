@@ -1,0 +1,30 @@
+app "Project Management"
+description: "A project management application"
+
+imports:
+  - "@intent/ui-components"
+  - "./schemas/address"
+
+routes:
+  - path: "/projects"
+    component: "ProjectList"
+  - path: "/projects/:id"
+    component: "ProjectDetail"
+
+components:
+  - name: "ProjectList"
+    inputs:
+      - name: "projects" (list(Project))
+    outputs:
+      - name: "selected" (Project)
+    
+  - name: "ProjectDetail"
+    inputs:
+      - name: "project" (Project)
+      - name: "address" (Address)
+    outputs:
+      - name: "updated" (Project)
+
+theme:
+  primary: "#007bff"
+  secondary: "#6c757d"

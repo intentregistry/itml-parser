@@ -1,0 +1,245 @@
+// ITML v0.1 Grammar
+// Intention Markup Language parser grammar for Pest
+
+// Main document rule
+document = { SOI ~ (top_level_block ~ NEWLINE*)* ~ EOI }
+
+// Top-level blocks
+top_level_block = { 
+    app_block |
+    intent_block |
+    layout_block |
+    component_block |
+    schema_block |
+    policy_block
+}
+
+// App block
+app_block = { 
+    "app" ~ WHITESPACE+ ~ string_literal ~ NEWLINE ~
+    (description_block ~ NEWLINE)* ~
+    (imports_block ~ NEWLINE)* ~
+    (routes_block ~ NEWLINE)* ~
+    (components_block ~ NEWLINE)* ~
+    (theme_block ~ NEWLINE)*
+}
+
+// Intent block
+intent_block = { 
+    "intent" ~ WHITESPACE+ ~ string_literal ~ NEWLINE ~
+    (description_block ~ NEWLINE)* ~
+    (inputs_block ~ NEWLINE)* ~
+    (outputs_block ~ NEWLINE)* ~
+    (workflow_block ~ NEWLINE)* ~
+    (rules_block ~ NEWLINE)* ~
+    (tests_block ~ NEWLINE)*
+}
+
+// Schema block
+schema_block = { 
+    "schema" ~ WHITESPACE+ ~ string_literal ~ NEWLINE ~
+    (description_block ~ NEWLINE)* ~
+    (fields_block ~ NEWLINE)* ~
+    (validation_block ~ NEWLINE)*
+}
+
+// Component block
+component_block = { 
+    "component" ~ WHITESPACE+ ~ string_literal ~ NEWLINE ~
+    (description_block ~ NEWLINE)* ~
+    (inputs_block ~ NEWLINE)* ~
+    (outputs_block ~ NEWLINE)*
+}
+
+// Layout block
+layout_block = { 
+    "layout" ~ WHITESPACE+ ~ string_literal ~ NEWLINE ~
+    (description_block ~ NEWLINE)* ~
+    (structure_block ~ NEWLINE)*
+}
+
+// Policy block
+policy_block = { 
+    "policy" ~ WHITESPACE+ ~ string_literal ~ NEWLINE ~
+    (description_block ~ NEWLINE)* ~
+    (rules_block ~ NEWLINE)*
+}
+
+// Block definitions
+description_block = { 
+    "description:" ~ WHITESPACE* ~ string_literal
+}
+
+imports_block = { 
+    "imports:" ~ NEWLINE ~ 
+    (INDENT ~ "-" ~ WHITESPACE+ ~ string_literal ~ NEWLINE)+
+}
+
+routes_block = { 
+    "routes:" ~ NEWLINE ~ 
+    (INDENT ~ "-" ~ WHITESPACE+ ~ "path:" ~ WHITESPACE+ ~ string_literal ~ NEWLINE ~
+     INDENT ~ WHITESPACE+ ~ "component:" ~ WHITESPACE+ ~ string_literal ~ NEWLINE)+
+}
+
+components_block = { 
+    "components:" ~ NEWLINE ~ 
+    (INDENT ~ "-" ~ WHITESPACE+ ~ "name:" ~ WHITESPACE+ ~ string_literal ~ NEWLINE ~
+     (INDENT ~ WHITESPACE+ ~ inputs_block ~ NEWLINE)* ~
+     (INDENT ~ WHITESPACE+ ~ outputs_block ~ NEWLINE)*)+
+}
+
+theme_block = { 
+    "theme:" ~ NEWLINE ~ 
+    (INDENT ~ identifier ~ ":" ~ WHITESPACE+ ~ string_literal ~ NEWLINE)+
+}
+
+inputs_block = { 
+    "inputs:" ~ NEWLINE ~ 
+    (INDENT ~ "-" ~ WHITESPACE+ ~ input_param ~ NEWLINE)+
+}
+
+outputs_block = { 
+    "outputs:" ~ NEWLINE ~ 
+    (INDENT ~ "-" ~ WHITESPACE+ ~ output_param ~ NEWLINE)+
+}
+
+fields_block = { 
+    "fields:" ~ NEWLINE ~ 
+    (INDENT ~ identifier ~ ":" ~ WHITESPACE+ ~ type_ref ~ (WHITESPACE+ ~ "=" ~ WHITESPACE+ ~ value)? ~ NEWLINE)+
+}
+
+validation_block = { 
+    "validation:" ~ NEWLINE ~ 
+    (INDENT ~ "-" ~ WHITESPACE+ ~ identifier ~ ":" ~ WHITESPACE+ ~ validation_rule ~ NEWLINE)+
+}
+
+workflow_block = { 
+    "workflow:" ~ NEWLINE ~ 
+    (INDENT ~ "-" ~ WHITESPACE+ ~ "step:" ~ WHITESPACE+ ~ string_literal ~ NEWLINE ~
+     INDENT ~ WHITESPACE+ ~ "action:" ~ WHITESPACE+ ~ string_literal ~ NEWLINE ~
+     (INDENT ~ WHITESPACE+ ~ "depends:" ~ WHITESPACE+ ~ "[" ~ string_literal ~ ("," ~ WHITESPACE+ ~ string_literal)* ~ "]" ~ NEWLINE)?)+
+}
+
+rules_block = { 
+    "rules:" ~ NEWLINE ~ 
+    (INDENT ~ "-" ~ WHITESPACE+ ~ "name:" ~ WHITESPACE+ ~ string_literal ~ NEWLINE ~
+     INDENT ~ WHITESPACE+ ~ "condition:" ~ WHITESPACE+ ~ string_literal ~ NEWLINE ~
+     INDENT ~ WHITESPACE+ ~ "action:" ~ WHITESPACE+ ~ string_literal ~ NEWLINE)+
+}
+
+tests_block = { 
+    "tests:" ~ NEWLINE ~ 
+    (INDENT ~ "-" ~ WHITESPACE+ ~ "name:" ~ WHITESPACE+ ~ string_literal ~ NEWLINE ~
+     INDENT ~ WHITESPACE+ ~ "inputs:" ~ NEWLINE ~
+     (INDENT ~ WHITESPACE+ ~ identifier ~ ":" ~ WHITESPACE+ ~ value ~ NEWLINE)+ ~
+     INDENT ~ WHITESPACE+ ~ "expected:" ~ NEWLINE ~
+     (INDENT ~ WHITESPACE+ ~ identifier ~ ":" ~ WHITESPACE+ ~ value ~ NEWLINE)+)+
+}
+
+structure_block = { 
+    "structure:" ~ NEWLINE ~ 
+    (INDENT ~ string_literal ~ NEWLINE)+
+}
+
+// Parameter definitions
+input_param = { 
+    "name:" ~ WHITESPACE+ ~ string_literal ~ NEWLINE ~
+    INDENT ~ WHITESPACE+ ~ "type:" ~ WHITESPACE+ ~ type_ref ~ NEWLINE ~
+    (INDENT ~ WHITESPACE+ ~ param_attr ~ NEWLINE)*
+}
+
+output_param = { 
+    "name:" ~ WHITESPACE+ ~ string_literal ~ NEWLINE ~
+    INDENT ~ WHITESPACE+ ~ "type:" ~ WHITESPACE+ ~ type_ref ~ NEWLINE
+}
+
+param_attr = { 
+    ("required:" ~ WHITESPACE+ ~ boolean) |
+    ("default:" ~ WHITESPACE+ ~ value) |
+    ("pattern:" ~ WHITESPACE+ ~ string_literal) |
+    ("in:" ~ WHITESPACE+ ~ string_literal)
+}
+
+validation_rule = { 
+    ("required") |
+    ("pattern(" ~ string_literal ~ ")")
+}
+
+// Type system
+type_ref = { 
+    primitive_type |
+    enum_type |
+    list_type |
+    map_type |
+    named_type
+}
+
+primitive_type = { 
+    "string" |
+    "number" |
+    "boolean" |
+    "datetime" |
+    "uuid" |
+    "bytes"
+}
+
+enum_type = { 
+    "enum(" ~ string_literal ~ ("," ~ WHITESPACE+ ~ string_literal)* ~ ")"
+}
+
+list_type = { 
+    "list(" ~ type_ref ~ ")"
+}
+
+map_type = { 
+    "map(" ~ type_ref ~ ")"
+}
+
+named_type = { 
+    identifier
+}
+
+// Values
+value = { 
+    string_literal |
+    number |
+    boolean |
+    regex_literal
+}
+
+// Literals
+string_literal = { 
+    "\"" ~ (!"\"" ~ any)* ~ "\"" |
+    "'" ~ (!"'" ~ any)* ~ "'"
+}
+
+number = { 
+    ("+" | "-")? ~ ("0" | [1-9] ~ [0-9]*) ~ ("." ~ [0-9]+)? ~ (("e" | "E") ~ ("+" | "-")? ~ [0-9]+)?
+}
+
+boolean = { 
+    "true" | "false"
+}
+
+regex_literal = { 
+    "/" ~ (!"/" ~ any)* ~ "/" ~ [a-z]*
+}
+
+// Identifiers
+identifier = { 
+    [a-zA-Z_] ~ [a-zA-Z0-9_]*
+}
+
+// Comments
+comment = { 
+    "#" ~ (!NEWLINE ~ any)*
+}
+
+// Whitespace and indentation
+WHITESPACE = { " " | "\t" }
+INDENT = { WHITESPACE+ }
+NEWLINE = { "\n" | "\r\n" }
+
+// Skip comments and whitespace
+COMMENT = { comment }
+WHITESPACE = _{ " " | "\t" | "\r" | "\n" }

@@ -1,0 +1,15 @@
+schema "Address"
+description: "A postal address schema"
+
+fields:
+  street: string
+  city: string
+  state: string
+  zip: string
+  country: string = "US"
+
+validation:
+  - street: required
+  - city: required
+  - state: required
+  - zip: pattern("^[0-9]{5}(-[0-9]{4})?$")

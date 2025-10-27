@@ -123,6 +123,7 @@ fn lint_intent_structure(intent: &Intent) -> Vec<Diagnostic> {
 }
 
 /// ITML002: avoid "*" in network.allow
+#[allow(dead_code)]
 fn lint_network_allow(_doc: &Document) -> Vec<Diagnostic> {
     // This would require parsing network configuration, which isn't in our current AST
     // For now, return empty diagnostics
@@ -174,6 +175,7 @@ fn lint_tests_with_rules(intent: &Intent) -> Vec<Diagnostic> {
 }
 
 /// ITML005: do not mix tabs and spaces
+#[allow(dead_code)]
 fn lint_mixed_indentation(_source: &str) -> Vec<Diagnostic> {
     // This would require the original source text
     // For now, return empty diagnostics
@@ -181,6 +183,7 @@ fn lint_mixed_indentation(_source: &str) -> Vec<Diagnostic> {
 }
 
 /// ITML006: unknown keys warn with suggestions
+#[allow(dead_code)]
 fn lint_unknown_keys(_doc: &Document) -> Vec<Diagnostic> {
     // This would require parsing unknown keys, which our current parser doesn't handle
     // For now, return empty diagnostics

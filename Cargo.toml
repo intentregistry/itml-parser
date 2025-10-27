@@ -2,14 +2,17 @@
 name = "itml-parser"
 version = "0.1.0"
 edition = "2021"
-
-[lib]
-crate-type = ["cdylib", "rlib"]
 description = "Parser / Formatter / Linter for ITML v0.1 — the Intention Markup Language"
 license = "MIT"
 repository = "https://github.com/intent-ecosystem/itml-parser"
-keywords = ["parser", "itml", "intent", "markup"]
+homepage = "https://github.com/intent-ecosystem/itml-parser"
+documentation = "https://docs.rs/itml-parser"
+keywords = ["parser", "itml", "intent", "markup", "wasm", "linter"]
 categories = ["parser-implementations", "development-tools"]
+readme = "README.md"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 pest = "2"

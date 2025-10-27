@@ -1,4 +1,4 @@
-use itml_parser::{parse, ParseOptions, Document, TopLevel};
+use itml_parser::{parse, ParseOptions, TopLevel};
 
 #[test]
 fn test_parse_valid_address_schema() {

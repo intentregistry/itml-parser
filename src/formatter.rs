@@ -1,5 +1,4 @@
 use crate::ast::*;
-use std::collections::HashMap;
 
 /// Format options
 #[derive(Debug, Clone)]

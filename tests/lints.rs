@@ -1,4 +1,4 @@
-use itml_parser::{parse, lint, ParseOptions, LintOptions, LintRule, DiagnosticLevel};
+use itml_parser::{parse, lint, ParseOptions, LintOptions, DiagnosticLevel};
 
 #[test]
 fn test_lint_intent_missing_inputs() {

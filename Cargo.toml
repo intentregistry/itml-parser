@@ -7,7 +7,7 @@ license = "MIT"
 repository = "https://github.com/intent-ecosystem/itml-parser"
 homepage = "https://github.com/intent-ecosystem/itml-parser"
 documentation = "https://docs.rs/itml-parser"
-keywords = ["parser", "itml", "intent", "markup", "wasm", "linter"]
+keywords = ["parser", "itml", "markup", "wasm", "linter"]
 categories = ["parser-implementations", "development-tools"]
 readme = "README.md"
 
